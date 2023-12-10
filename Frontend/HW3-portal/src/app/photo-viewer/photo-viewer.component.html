@@ -1,0 +1,22 @@
+<div>
+    <!-- Create a div with an input field and a search button -->
+    <div class="container" style="margin-top:20px">
+        <div class="row" style="justify-content: center;">
+            <mat-form-field class="col-sm-6" >
+                <input matInput placeholder="Search" [(ngModel)]="searchText">
+            </mat-form-field>
+            <div class="col-sm-3" style="align-self: center; justify-content: space-between;">
+                <button mat-flat-button color="primary" type="submit" (click)="search()">Search</button>
+            </div>
+        </div>
+        <div>
+            <div *ngFor="let photo of output_image">
+                <img [src]="'https://photos-jms9970.s3.amazonaws.com/'+photo.url" style="width: 10vw; height: 10vw; margin: 20px;"/>
+                <span>Tags: {{photo.labels.join(", ")}}</span>
+            </div>
+            
+        </div>
+        <!-- Create a mat input field -->
+       
+    </div>
+</div>

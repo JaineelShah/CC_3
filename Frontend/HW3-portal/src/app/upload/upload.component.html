@@ -1,0 +1,40 @@
+<div>
+    <!-- Create a div with an input field and a search button -->
+    <div class="container" style="margin-top:20px">
+        <div class="column px-4" style="justify-content: center;">
+            <div class="row" style="margin-bottom: 20px;" >
+                <input type="file" (change)="selectFile($event)">
+            </div>
+
+            <div class="row gx-5" >
+                <mat-form-field class="example-chip-list" appearance="fill">
+                    <mat-label>Labels</mat-label>
+                    <mat-chip-grid #chipGrid aria-label="Enter tags">
+                      <mat-chip-row *ngFor="let tag of tags"
+                                    (removed)="remove(tag)"
+                                    [editable]="true"
+                                    (edited)="edit(tag, $event)"
+                                    [aria-description]="'press enter to edit ' + tag.name">
+                        {{tag.name}}
+                        <button matChipRemove [attr.aria-label]="'remove ' + tag.name">
+                          <mat-icon>cancel</mat-icon>
+                        </button>
+                      </mat-chip-row>
+                      <input placeholder="New Label..."
+                             [matChipInputFor]="chipGrid"
+                             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                             [matChipInputAddOnBlur]="addOnBlur"
+                             (matChipInputTokenEnd)="add($event)"/>
+                    </mat-chip-grid>
+                  </mat-form-field>
+            </div>
+
+            <div class="row" style="align-self: center; justify-content: center;">
+                <button style="width: 90%;" mat-flat-button color="primary" type="submit" (click)="upload()">Upload</button>
+            </div>
+        </div>
+        <!-- Create a mat input field -->
+       
+    </div>
+</div>
+
