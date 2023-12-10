@@ -1,0 +1,27 @@
+version: 0.2
+env:
+    variables:
+        CACHE_CONTROL: "86400"
+        S3_BUCKET: "portal-jms9970-cfn"
+        BUILD_FOLDER: "dist/portal" 
+        BUILD_ENV: "production"
+phases:
+    install:
+        commands:
+            - echo Installing source NPM dependencies...
+            - npm install
+            - npm install -g @angular/cli@15.1.1
+    build:
+        commands:
+            - echo Build started on `date`
+            - ng build --configuration=${BUILD_ENV}
+    post_build:
+         commands:
+            - aws s3 rm --recursive s3://${S3_BUCKET}
+            - aws s3 cp ${BUILD_FOLDER} s3://${S3_BUCKET} --recursive --cache-control "max-age=${CACHE_CONTROL}"
+            - echo Build completed on `date`
+artifacts:
+    files:
+        - '**/*'
+    base-directory: 'dist*'
+    discard-paths: yes

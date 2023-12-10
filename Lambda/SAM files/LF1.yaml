@@ -1,0 +1,215 @@
+# This AWS SAM template has been generated from your function's configuration. If
+# your function has one or more triggers, note that the AWS resources associated
+# with these triggers aren't fully specified in this template and include
+# placeholder values. Open this template in AWS Application Composer or your
+# favorite IDE and modify it to specify a serverless application with other AWS
+# resources.
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: An AWS Serverless Application Model template describing your function.
+Resources:
+  LF1:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Description: ''
+      MemorySize: 128
+      Timeout: 3
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      EphemeralStorage:
+        Size: 512
+      EventInvokeConfig:
+        MaximumEventAgeInSeconds: 21600
+        MaximumRetryAttempts: 2
+      Layers:
+        - arn:aws:lambda:us-east-1:160335184307:layer:photos:1
+      PackageType: Zip
+      Policies:
+        - Statement:
+            - Sid: VisualEditor0
+              Effect: Allow
+              Action:
+                - logs:DeleteSubscriptionFilter
+                - logs:CreateLogAnomalyDetector
+                - s3:GetStorageLensGroup
+                - logs:PutDataProtectionPolicy
+                - s3:GetBucketWebsite
+                - logs:UpdateAnomaly
+                - s3:GetMultiRegionAccessPoint
+                - s3:GetObjectAttributes
+                - s3:GetAccessGrantsInstanceResourcePolicy
+                - logs:DeleteQueryDefinition
+                - s3:GetObjectLegalHold
+                - s3:GetBucketNotification
+                - logs:PutDeliverySource
+                - s3:DescribeMultiRegionAccessPointOperation
+                - s3:GetReplicationConfiguration
+                - logs:PutSubscriptionFilter
+                - s3:GetStorageLensDashboard
+                - s3:GetLifecycleConfiguration
+                - s3:GetInventoryConfiguration
+                - s3:GetBucketTagging
+                - s3:GetAccessPointPolicyForObjectLambda
+                - logs:CreateDelivery
+                - logs:DeleteLogStream
+                - logs:CreateExportTask
+                - logs:DeleteMetricFilter
+                - s3:GetAccessGrantsInstance
+                - logs:DeleteLogDelivery
+                - logs:PutDestination
+                - logs:DeleteDeliveryDestination
+                - s3:GetMultiRegionAccessPointPolicyStatus
+                - logs:DisassociateKmsKey
+                - s3:GetDataAccess
+                - logs:PutAccountPolicy
+                - s3:GetBucketVersioning
+                - s3:GetAccessPointConfigurationForObjectLambda
+                - s3:GetMultiRegionAccessPointRoutes
+                - s3:GetStorageLensConfiguration
+                - logs:PutDeliveryDestination
+                - s3:GetAccountPublicAccessBlock
+                - s3:GetBucketCORS
+                - s3:GetObjectVersion
+                - s3:GetObjectVersionTagging
+                - s3:GetStorageLensConfigurationTagging
+                - logs:DeleteDeliveryDestinationPolicy
+                - s3:GetObjectAcl
+                - s3:GetBucketObjectLockConfiguration
+                - logs:CreateLogStream
+                - s3:GetIntelligentTieringConfiguration
+                - s3:GetAccessGrantsInstanceForPrefix
+                - logs:CancelExportTask
+                - logs:DeleteRetentionPolicy
+                - s3:GetObjectVersionAcl
+                - s3:GetBucketPolicyStatus
+                - s3:GetAccessGrantsLocation
+                - s3:GetObjectRetention
+                - s3:GetJobTagging
+                - logs:DeleteDeliverySource
+                - logs:CreateLogGroup
+                - logs:Link
+                - logs:PutMetricFilter
+                - logs:CreateLogDelivery
+                - s3:GetObject
+                - s3:DescribeJob
+                - logs:UpdateLogDelivery
+                - s3:GetAnalyticsConfiguration
+                - logs:PutDeliveryDestinationPolicy
+                - s3:GetObjectVersionForReplication
+                - s3:GetAccessPointForObjectLambda
+                - logs:DeleteDelivery
+                - logs:DeleteDataProtectionPolicy
+                - s3:GetAccessPoint
+                - s3:GetBucketLogging
+                - s3:GetAccessGrant
+                - s3:GetAccelerateConfiguration
+                - s3:GetObjectVersionAttributes
+                - s3:GetBucketPolicy
+                - logs:DeleteAccountPolicy
+                - s3:GetEncryptionConfiguration
+                - s3:GetObjectVersionTorrent
+                - logs:UpdateLogAnomalyDetector
+                - s3:GetBucketRequestPayment
+                - s3:GetAccessPointPolicyStatus
+                - s3:GetObjectTagging
+                - logs:AssociateKmsKey
+                - s3:GetMetricsConfiguration
+                - s3:GetBucketOwnershipControls
+                - logs:DeleteLogAnomalyDetector
+                - s3:GetBucketPublicAccessBlock
+                - s3:GetMultiRegionAccessPointPolicy
+                - logs:DeleteLogGroup
+                - s3:GetAccessPointPolicyStatusForObjectLambda
+                - logs:PutDestinationPolicy
+                - logs:PutQueryDefinition
+                - logs:DeleteDestination
+                - s3:GetBucketAcl
+                - logs:PutLogEvents
+                - s3:GetObjectTorrent
+                - logs:PutRetentionPolicy
+                - s3:GetBucketLocation
+                - s3:GetAccessPointPolicy
+              Resource: '*'
+            - Sid: AmazonRekognitionReadOnlyAccess
+              Effect: Allow
+              Action:
+                - rekognition:CompareFaces
+                - rekognition:DetectFaces
+                - rekognition:DetectLabels
+                - rekognition:ListCollections
+                - rekognition:ListFaces
+                - rekognition:SearchFaces
+                - rekognition:SearchFacesByImage
+                - rekognition:DetectText
+                - rekognition:GetCelebrityInfo
+                - rekognition:RecognizeCelebrities
+                - rekognition:DetectModerationLabels
+                - rekognition:GetLabelDetection
+                - rekognition:GetFaceDetection
+                - rekognition:GetContentModeration
+                - rekognition:GetPersonTracking
+                - rekognition:GetCelebrityRecognition
+                - rekognition:GetFaceSearch
+                - rekognition:GetTextDetection
+                - rekognition:GetSegmentDetection
+                - rekognition:DescribeStreamProcessor
+                - rekognition:ListStreamProcessors
+                - rekognition:DescribeProjects
+                - rekognition:DescribeProjectVersions
+                - rekognition:DetectCustomLabels
+                - rekognition:DetectProtectiveEquipment
+                - rekognition:ListTagsForResource
+                - rekognition:ListDatasetEntries
+                - rekognition:ListDatasetLabels
+                - rekognition:DescribeDataset
+                - rekognition:ListProjectPolicies
+                - rekognition:ListUsers
+                - rekognition:SearchUsers
+                - rekognition:SearchUsersByImage
+                - rekognition:GetMediaAnalysisJob
+                - rekognition:ListMediaAnalysisJobs
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: '*'
+      SnapStart:
+        ApplyOn: None
+      Events:
+        BucketEvent1:
+          Type: S3
+          Properties:
+            Bucket:
+              Ref: Bucket1
+            Events:
+              - s3:ObjectCreated:*
+      RuntimeManagementConfig: {}
+  Bucket1:
+    Type: AWS::S3::Bucket
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+  BucketPolicy1:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: Bucket1
+      PolicyDocument:
+        Statement:
+          - Action: s3:*
+            Effect: Deny
+            Principal: '*'
+            Resource:
+              - arn:aws:s3:::Bucket1/*
+              - arn:aws:s3:::Bucket1
+            Condition:
+              Bool:
+                aws:SecureTransport: false

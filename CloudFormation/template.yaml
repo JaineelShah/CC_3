@@ -1,0 +1,605 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  APIGatewayRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Sid: ""
+            Principal:
+              Service:
+                - apigateway.amazonaws.com
+            Action:
+              - sts:AssumeRole
+  PhotosJms9970Cfn:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: photos-jms9970-cfn
+  PortalJms9970Cfn:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: portal-jms9970-cfn
+      WebsiteConfiguration:
+        IndexDocument: index.html
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+  PortalBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    DependsOn:
+      - PortalJms9970Cfn
+    Properties:
+      Bucket: !Ref PortalJms9970Cfn
+      PolicyDocument: 
+        Statement:
+          - Action:
+              - s3:GetObject
+            Effect: Allow
+            Resource: !Join ["",["arn:aws:s3:::",!Ref PortalJms9970Cfn,"/*"]]
+            Principal: "*"
+        
+  LF1:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: 'Index function'
+      MemorySize: 128
+      Timeout: 3
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.9
+      Architecture: x86_64
+      EphemeralStorage:
+        Size: 512
+      EventInvokeConfig:
+        MaximumEventAgeInSeconds: 21600
+        MaximumRetryAttempts: 2
+      Layers:
+        - arn:aws:lambda:us-east-1:160335184307:layer:photos:1
+      PackageType: Zip
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Sid: VisualEditor0
+              Effect: Allow
+              Action:
+                - logs:DeleteSubscriptionFilter
+                - logs:CreateLogAnomalyDetector
+                - s3:GetStorageLensGroup
+                - logs:PutDataProtectionPolicy
+                - s3:GetBucketWebsite
+                - logs:UpdateAnomaly
+                - s3:GetMultiRegionAccessPoint
+                - s3:GetObjectAttributes
+                - s3:GetAccessGrantsInstanceResourcePolicy
+                - logs:DeleteQueryDefinition
+                - s3:GetObjectLegalHold
+                - s3:GetBucketNotification
+                - logs:PutDeliverySource
+                - s3:DescribeMultiRegionAccessPointOperation
+                - s3:GetReplicationConfiguration
+                - logs:PutSubscriptionFilter
+                - s3:GetStorageLensDashboard
+                - s3:GetLifecycleConfiguration
+                - s3:GetInventoryConfiguration
+                - s3:GetBucketTagging
+                - s3:GetAccessPointPolicyForObjectLambda
+                - logs:CreateDelivery
+                - logs:DeleteLogStream
+                - logs:CreateExportTask
+                - logs:DeleteMetricFilter
+                - s3:GetAccessGrantsInstance
+                - logs:DeleteLogDelivery
+                - logs:PutDestination
+                - logs:DeleteDeliveryDestination
+                - s3:GetMultiRegionAccessPointPolicyStatus
+                - logs:DisassociateKmsKey
+                - s3:GetDataAccess
+                - logs:PutAccountPolicy
+                - s3:GetBucketVersioning
+                - s3:GetAccessPointConfigurationForObjectLambda
+                - s3:GetMultiRegionAccessPointRoutes
+                - s3:GetStorageLensConfiguration
+                - logs:PutDeliveryDestination
+                - s3:GetAccountPublicAccessBlock
+                - s3:GetBucketCORS
+                - s3:GetObjectVersion
+                - s3:GetObjectVersionTagging
+                - s3:GetStorageLensConfigurationTagging
+                - logs:DeleteDeliveryDestinationPolicy
+                - s3:GetObjectAcl
+                - s3:GetBucketObjectLockConfiguration
+                - logs:CreateLogStream
+                - s3:GetIntelligentTieringConfiguration
+                - s3:GetAccessGrantsInstanceForPrefix
+                - logs:CancelExportTask
+                - logs:DeleteRetentionPolicy
+                - s3:GetObjectVersionAcl
+                - s3:GetBucketPolicyStatus
+                - s3:GetAccessGrantsLocation
+                - s3:GetObjectRetention
+                - s3:GetJobTagging
+                - logs:DeleteDeliverySource
+                - logs:CreateLogGroup
+                - logs:Link
+                - logs:PutMetricFilter
+                - logs:CreateLogDelivery
+                - s3:GetObject
+                - s3:DescribeJob
+                - logs:UpdateLogDelivery
+                - s3:GetAnalyticsConfiguration
+                - logs:PutDeliveryDestinationPolicy
+                - s3:GetObjectVersionForReplication
+                - s3:GetAccessPointForObjectLambda
+                - logs:DeleteDelivery
+                - logs:DeleteDataProtectionPolicy
+                - s3:GetAccessPoint
+                - s3:GetBucketLogging
+                - s3:GetAccessGrant
+                - s3:GetAccelerateConfiguration
+                - s3:GetObjectVersionAttributes
+                - s3:GetBucketPolicy
+                - logs:DeleteAccountPolicy
+                - s3:GetEncryptionConfiguration
+                - s3:GetObjectVersionTorrent
+                - logs:UpdateLogAnomalyDetector
+                - s3:GetBucketRequestPayment
+                - s3:GetAccessPointPolicyStatusForObjectLambda
+                - logs:DeleteLogAnomalyDetector
+                - s3:GetBucketPublicAccessBlock
+                - s3:GetMultiRegionAccessPointPolicy
+                - logs:DeleteLogGroup
+                - s3:GetAccessPointPolicyStatusForObjectLambda
+                - logs:PutDestinationPolicy
+                - logs:PutQueryDefinition
+                - logs:DeleteDestination
+                - s3:GetBucketAcl
+                - logs:PutLogEvents
+                - s3:GetObjectTorrent
+                - logs:PutRetentionPolicy
+                - s3:GetBucketLocation
+                - s3:GetAccessPointPolicy
+              Resource: '*'
+            - Sid: AmazonRekognitionReadOnlyAccess
+              Effect: Allow
+              Action:
+                - rekognition:CompareFaces
+                - rekognition:DetectFaces
+                - rekognition:DetectLabels
+                - rekognition:ListCollections
+                - rekognition:ListFaces
+                - rekognition:SearchFaces
+                - rekognition:SearchFacesByImage
+                - rekognition:DetectText
+                - rekognition:GetCelebrityInfo
+                - rekognition:RecognizeCelebrities
+                - rekognition:DetectModerationLabels
+                - rekognition:GetLabelDetection
+                - rekognition:GetFaceDetection
+                - rekognition:GetContentModeration
+                - rekognition:GetPersonTracking
+                - rekognition:GetCelebrityRecognition
+                - rekognition:GetFaceSearch
+                - rekognition:GetTextDetection
+                - rekognition:GetSegmentDetection
+                - rekognition:DescribeStreamProcessor
+                - rekognition:ListStreamProcessors
+                - rekognition:DescribeProjects
+
+  
+  searchphotos:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: 'Lamda fn for search'
+      MemorySize: 128
+      Timeout: 3
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      EphemeralStorage:
+        Size: 512
+      EventInvokeConfig:
+        MaximumEventAgeInSeconds: 21600
+        MaximumRetryAttempts: 2
+      PackageType: Zip
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+              Resource: arn:aws:logs:us-east-1:160335184307:*
+            - Effect: Allow
+              Action:
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource:
+                - >-
+                  arn:aws:logs:us-east-1:160335184307:log-group:/aws/lambda/searchphotos:*
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+              Resource:
+                - arn:aws:s3:::your-s3-bucket-name/*
+            - Sid: VisualEditor0
+              Effect: Allow
+              Action:
+                - logs:DeleteSubscriptionFilter
+                - logs:CreateLogAnomalyDetector
+                - s3:GetStorageLensGroup
+                - logs:PutDataProtectionPolicy
+                - s3:GetBucketWebsite
+                - logs:UpdateAnomaly
+                - s3:GetMultiRegionAccessPoint
+                - s3:GetObjectAttributes
+                - s3:GetAccessGrantsInstanceResourcePolicy
+                - logs:DeleteQueryDefinition
+                - s3:GetObjectLegalHold
+                - s3:GetBucketNotification
+                - logs:PutDeliverySource
+                - s3:DescribeMultiRegionAccessPointOperation
+                - s3:GetReplicationConfiguration
+                - logs:PutSubscriptionFilter
+                - s3:GetStorageLensDashboard
+                - s3:GetLifecycleConfiguration
+                - s3:GetInventoryConfiguration
+                - s3:GetBucketTagging
+                - s3:GetAccessPointPolicyForObjectLambda
+                - logs:CreateDelivery
+                - logs:DeleteLogStream
+                - logs:CreateExportTask
+                - logs:DeleteMetricFilter
+                - s3:GetAccessGrantsInstance
+                - logs:DeleteLogDelivery
+                - logs:PutDestination
+                - logs:DeleteDeliveryDestination
+                - s3:GetMultiRegionAccessPointPolicyStatus
+                - logs:DisassociateKmsKey
+                - s3:GetDataAccess
+                - logs:PutAccountPolicy
+                - s3:GetBucketVersioning
+                - s3:GetAccessPointConfigurationForObjectLambda
+                - s3:GetMultiRegionAccessPointRoutes
+                - s3:GetStorageLensConfiguration
+                - logs:PutDeliveryDestination
+                - s3:GetAccountPublicAccessBlock
+                - s3:GetBucketCORS
+                - s3:GetObjectVersion
+                - s3:GetObjectVersionTagging
+                - s3:GetStorageLensConfigurationTagging
+                - logs:DeleteDeliveryDestinationPolicy
+                - s3:GetObjectAcl
+                - s3:GetBucketObjectLockConfiguration
+                - logs:CreateLogStream
+                - s3:GetIntelligentTieringConfiguration
+                - s3:GetAccessGrantsInstanceForPrefix
+                - logs:CancelExportTask
+                - logs:DeleteRetentionPolicy
+                - s3:GetObjectVersionAcl
+                - s3:GetBucketPolicyStatus
+                - s3:GetAccessGrantsLocation
+                - s3:GetObjectRetention
+                - s3:GetJobTagging
+                - logs:DeleteDeliverySource
+                - logs:CreateLogGroup
+                - logs:Link
+                - logs:PutMetricFilter
+                - logs:CreateLogDelivery
+                - s3:GetObject
+                - s3:DescribeJob
+                - logs:UpdateLogDelivery
+                - s3:GetAnalyticsConfiguration
+                - logs:PutDeliveryDestinationPolicy
+                - s3:GetObjectVersionForReplication
+                - s3:GetAccessPointForObjectLambda
+                - logs:DeleteDelivery
+                - logs:DeleteDataProtectionPolicy
+                - s3:GetAccessPoint
+                - s3:GetBucketLogging
+                - s3:GetAccessGrant
+                - s3:GetAccelerateConfiguration
+                - s3:GetObjectVersionAttributes
+                - s3:GetBucketPolicy
+                - logs:DeleteAccountPolicy
+                - s3:GetEncryptionConfiguration
+                - s3:GetObjectVersionTorrent
+                - logs:UpdateLogAnomalyDetector
+                - s3:GetBucketRequestPayment
+                - s3:GetAccessPointPolicyStatusForObjectLambda
+                - logs:DeleteLogAnomalyDetector
+                - s3:GetBucketPublicAccessBlock
+                - s3:GetMultiRegionAccessPointPolicy
+                - logs:DeleteLogGroup
+                - s3:GetAccessPointPolicyStatusForObjectLambda
+                - logs:PutDestinationPolicy
+                - logs:PutQueryDefinition
+                - logs:DeleteDestination
+                - s3:GetBucketAcl
+                - logs:PutLogEvents
+                - s3:GetObjectTorrent
+                - logs:PutRetentionPolicy
+                - s3:GetBucketLocation
+                - s3:GetAccessPointPolicy
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - lex:RecognizeText
+                - lex:StartConversation
+                - lex:PostContent
+                - lex:PostText
+              Resource: '*'
+      SnapStart:
+        ApplyOn: None
+      Events:
+        Api1:
+          Type: Api
+          Properties:
+            Path: /search
+            Method: GET
+      RuntimeManagementConfig: {}
+
+  AIPhotoSearchApi:
+    Type: AWS::ApiGateway::RestApi
+    DependsOn:
+      - APIGatewayRole
+      - PhotosJms9970Cfn
+    Properties:
+      Name: Photo Search API 2
+      Description: A demo API for Tagging and searching Photos
+      Body:
+        swagger: "2.0"
+        info:
+          description: "AI Photo Search application, built during the Cloud and Big Data course\
+            \ at Columbia University."
+          version: "1.0.0"
+          title: "AI Photo Search"
+        # host: "u1m1p8i77a.execute-api.us-east-1.amazonaws.com"
+        basePath: "/dev"
+        schemes:
+        - "https"
+        paths:
+          /search:
+            get:
+              operationId: "searchPhotos"
+              consumes:
+              - "application/json"
+              produces:
+              - "application/json"
+              parameters:
+              - name: "q"
+                in: "query"
+                required: false
+                type: "string"
+              responses:
+                "200":
+                  description: "200 response"
+                  schema:
+                    $ref: "#/definitions/SearchResponse"
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: "string"
+                    Access-Control-Allow-Methods:
+                      type: "string"
+                    Access-Control-Allow-Headers:
+                      type: "string"
+                "500":
+                  description: "500 response"
+                  schema:
+                    $ref: "#/definitions/Error"
+                "403":
+                  description: "403 response"
+                  schema:
+                    $ref: "#/definitions/Error"
+              security:
+              - api_key: []
+              x-amazon-apigateway-integration:
+                httpMethod: "POST"
+                uri: "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:160335184307:function:search-photos/invocations"
+                responses:
+                  default:
+                    statusCode: "200"
+                passthroughBehavior: "when_no_match"
+                contentHandling: "CONVERT_TO_TEXT"
+                type: "aws_proxy"
+            options:
+              consumes:
+              - "application/json"
+              produces:
+              - "application/json"
+              responses:
+                "200":
+                  description: "200 response"
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: "string"
+                    Access-Control-Allow-Methods:
+                      type: "string"
+                    Access-Control-Allow-Headers:
+                      type: "string"
+              x-amazon-apigateway-integration:
+                responses:
+                  default:
+                    statusCode: "200"
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+                      method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                      method.response.header.Access-Control-Allow-Origin: "'*'"
+                    responseTemplates:
+                      application/json: "{\"statusCode\":200}"
+                requestTemplates:
+                  application/json: "{'statusCode':200}"
+                passthroughBehavior: "when_no_templates"
+                type: "mock"
+          /upload:
+            put:
+              operationId: "uploadPhoto"
+              produces:
+              - "application/json"
+              parameters:
+              - name: "Content-Type"
+                in: "header"
+                required: false
+                type: "string"
+              - name: "Accept"
+                in: "header"
+                required: false
+                type: "string"
+              - name: "key"
+                in: "query"
+                required: true
+                type: "string"
+              - name: "X-Amz-Meta-CustomLabels"
+                in: "header"
+                required: false
+                type: "string"
+              responses:
+                "200":
+                  description: "200 response"
+                  schema:
+                    $ref: "#/definitions/MODELa79541"
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: "string"
+                    Access-Control-Allow-Methods:
+                      type: "string"
+                    Access-Control-Allow-Headers:
+                      type: "string"
+                "500":
+                  description: "500 response"
+                  schema:
+                    $ref: "#/definitions/Error"
+                "403":
+                  description: "403 response"
+                  schema:
+                    $ref: "#/definitions/Error"
+              security:
+              - api_key: []
+              x-amazon-apigateway-integration:
+                credentials:  !GetAtt APIGatewayRole.Arn
+                type: "aws"
+                httpMethod: "PUT"
+                uri: !Join ["",["arn:aws:apigateway:us-east-1:s3:path/",!Ref PhotosJms9970Cfn,"/{object}"]]
+                responses:
+                  default:
+                    statusCode: "200"
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Methods: "'*'"
+                      method.response.header.Access-Control-Allow-Headers: "'*'"
+                      method.response.header.Access-Control-Allow-Origin: "'*'"
+                requestParameters:
+                  integration.request.path.object: "method.request.querystring.key"
+                  integration.request.header.Accept: "method.request.header.Accept"
+                  integration.request.header.X-Amz-Meta-CustomLabels: "method.request.header.X-Amz-Meta-CustomLabels"
+                  integration.request.header.Content-Type: "method.request.header.Content-Type"
+                passthroughBehavior: "when_no_templates"
+            options:
+              consumes:
+              - "application/json"
+              produces:
+              - "application/json"
+              responses:
+                "200":
+                  description: "200 response"
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: "string"
+                    Access-Control-Allow-Methods:
+                      type: "string"
+                    Access-Control-Allow-Headers:
+                      type: "string"
+              x-amazon-apigateway-integration:
+                responses:
+                  default:
+                    statusCode: "200"
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Methods: "'*'"
+                      method.response.header.Access-Control-Allow-Headers: "'*'"
+                      method.response.header.Access-Control-Allow-Origin: "'*'"
+                    responseTemplates:
+                      application/json: "{\"statusCode\":200}"
+                requestTemplates:
+                  application/json: "{'statusCode':200}"
+                passthroughBehavior: "never"
+                type: "mock"
+        securityDefinitions:
+          api_key:
+            type: "apiKey"
+            name: "x-api-key"
+            in: "header"
+        definitions:
+          Error:
+            type: "object"
+            properties:
+              code:
+                type: "integer"
+                format: "int32"
+              message:
+                type: "string"
+          Photo:
+            type: "object"
+            properties:
+              url:
+                type: "string"
+              labels:
+                type: "array"
+                items:
+                  type: "string"
+          MODELa79541:
+            type: "object"
+          SearchResponse:
+            type: "object"
+            properties:
+              results:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Photo"
+        x-amazon-apigateway-binary-media-types:
+        - "image/png"
+        - "image/jpeg"
+        - "image/jpg"
+  ApiGatewayDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - AIPhotoSearchApi
+    Properties:
+      RestApiId: !GetAtt AIPhotoSearchApi.RestApiId
+      StageName: dev
+      StageDescription:
+        LoggingLevel: INFO
+  ApiGateWayApiKey:
+    Type: AWS::ApiGateway::ApiKey
+    DependsOn: 
+      - ApiGatewayDeployment
+    Properties:
+      Name: !Sub ${AWS::StackName}-ApiKey
+      Description: API Key for the AI Photo Search API
+      Enabled: true
+      StageKeys:
+        - RestApiId: !Ref AIPhotoSearchApi
+          StageName: dev
+  ApiGatewayUsagePlan:
+    Type: AWS::ApiGateway::UsagePlan
+    DependsOn: 
+      - ApiGateWayApiKey
+      - ApiGatewayDeployment
+    Properties:
+      UsagePlanName: !Sub ${AWS::StackName}-UsagePlan
+      Description: Usage Plan for the AI Photo Search API
+      ApiStages:
+        - ApiId: !Ref AIPhotoSearchApi
+          Stage: dev
+  ApiGatewayUsagePlanKey:
+    Type: AWS::ApiGateway::UsagePlanKey
+    DependsOn: 
+      - ApiGateWayApiKey
+      - ApiGatewayUsagePlan
+    Properties:
+      KeyId: !Ref ApiGateWayApiKey
+      KeyType: API_KEY
+      UsagePlanId: !Ref ApiGatewayUsagePlan
